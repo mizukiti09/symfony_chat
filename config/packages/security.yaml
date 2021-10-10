@@ -1,0 +1,42 @@
+security: 
+    providers:
+        our_db_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+            pattern: ^/
+            provider: our_db_provider
+
+            form_login: 
+                # ↓ デフォルトでは form_loginのパラメーターは、_username , _passwordとなっている為、実際に使うカラム名を設定する。
+                username_parameter: 'username'
+                password_parameter: 'password'
+                login_path: login
+                check_path: login
+                always_use_default_target_path: true
+                default_target_path: /contribute/page/
+            logout: 
+                path: logout
+                target: login
+                invalidate_session: false
+
+    access_control:
+        - { path: ^/contribute/create, roles: [ROLE_ADMIN, ROLE_USER ]}
+        - { path: ^/my_info, roles: [ROLE_ADMIN, ROLE_USER ]}
+        - { path: ^/message_prev, roles: [ROLE_ADMIN, ROLE_USER ]}
+        - { path: ^/message, roles: [ROLE_ADMIN, ROLE_USER ]}
+        - { path: ^/message_list, roles: [ROLE_ADMIN, ROLE_USER ]}
+        - { path: ^/message_list_guest, roles: [ROLE_ADMIN, ROLE_USER ]}
+
+        
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt

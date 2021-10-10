@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pusher Demo!{% endblock %}
+
+{% block body %}
+    <button type="button" id="say-hello-button">Say Hello!</button>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script>
+        var pusher = new Pusher("735b5155d7bf06bfc467", {
+            cluster: 'ap3'
+        });
+        console.log(pusher);
+        var channel = pusher.subscribe('greetings');
+        channel.bind('new-greeting', function() {
+            alert('Hello!');
+        });
+
+        $('#say-hello-button').click(function () {
+            $.post("{{ path('demo_say_hello') }}");
+        });
+    </script>
+{% endblock %}
